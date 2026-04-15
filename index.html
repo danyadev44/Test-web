@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЕГЭ Математика — Тренажёр</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap');
+:root{
+  --bg:#e4f0fa;--surface:#fff;
+  --glass:rgba(255,255,255,.68);--glass2:rgba(255,255,255,.88);
+  --border:rgba(37,99,235,.10);--border2:rgba(37,99,235,.24);
+  --text:#0f172a;--sub:#475569;--dim:#94a3b8;
+  --a:#2563eb;--a2:#3b82f6;--a3:#60a5fa;--al:rgba(37,99,235,.07);
+  --green:#16a34a;--gl:rgba(22,163,74,.09);
+  --red:#dc2626;--rl:rgba(220,38,38,.09);
+  --gold:#d97706;--gol:rgba(217,119,6,.09);
+  --r:18px;--rs:12px;
+  --sh:0 1px 4px rgba(37,99,235,.07),0 4px 18px rgba(37,99,235,.07);
+  --sh2:0 4px 14px rgba(37,99,235,.10),0 12px 34px rgba(37,99,235,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;animation:orbF 16s ease-in-out infinite;}
+.orb1{width:560px;height:560px;top:-160px;left:-140px;opacity:.45;background:radial-gradient(circle,rgba(147,197,253,.75),rgba(186,230,253,.4),transparent 70%);animation-duration:16s;}
+.orb2{width:460px;height:460px;bottom:-100px;right:-100px;opacity:.4;background:radial-gradient(circle,rgba(186,230,253,.8),rgba(147,197,253,.45),transparent 70%);animation-duration:20s;animation-delay:-7s;}
+.orb3{width:340px;height:340px;top:40%;left:55%;opacity:.26;background:radial-gradient(circle,rgba(224,242,254,.9),rgba(186,230,253,.5),transparent 70%);animation-duration:26s;animation-delay:-11s;}
+@keyframes orbF{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(26px,-18px) scale(1.04)}66%{transform:translate(-12px,22px) scale(.97)}}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:60px;display:flex;align-items:center;gap:4px;padding:0 20px;
+background:rgba(221,238,249,.86);backdrop-filter:blur(22px) saturate(200%);-webkit-backdrop-filter:blur(22px) saturate(200%);
+border-bottom:1px solid rgba(255,255,255,.92);box-shadow:0 1px 0 rgba(59,130,246,.1),0 2px 12px rgba(37,99,235,.06);}
+.logo{display:flex;align-items:center;gap:9px;cursor:pointer;margin-right:14px;flex-shrink:0;}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;box-shadow:0 2px 10px rgba(37,99,235,.35);transition:transform .2s,box-shadow .2s;}
+.logo:hover .logo-icon{transform:scale(1.08);box-shadow:0 4px 18px rgba(37,99,235,.45);}
+.logo-text{font-family:‘Syne’,sans-serif;font-weight:800;font-size:1rem;background:linear-gradient(135deg,#1d4ed8,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-tabs{display:flex;gap:2px;flex:1;}
+.nav-tab{padding:7px 13px;border:none;border-radius:9px;background:transparent;color:var(–sub);font-family:‘Inter’,sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.nav-tab i{font-size:.79rem;}
+.nav-tab:hover{color:var(–text);background:rgba(37,99,235,.07);}
+.nav-tab.active{color:var(–a);background:var(–al);font-weight:600;}
+
+/* pages */
+.page{display:none;min-height:100vh;padding-top:60px;position:relative;z-index:1;}
+.page.active{display:block;animation:pgIn .38s cubic-bezier(.16,1,.3,1) both;}
+@keyframes pgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* glass util */
+.gl-card{background:var(–glass);backdrop-filter:blur(18px) saturate(200%);-webkit-backdrop-filter:blur(18px) saturate(200%);border:1px solid rgba(255,255,255,.9);box-shadow:var(–sh);}
+
+/* buttons */
+.btn-pri{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border:none;border-radius:12px;background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;font-family:‘Inter’,sans-serif;font-size:.93rem;font-weight:600;cursor:pointer;transition:all .22s;box-shadow:0 3px 14px rgba(37,99,235,.3);position:relative;overflow:hidden;}
+.btn-pri::after{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity .2s;}
+.btn-pri:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(37,99,235,.4);}
+.btn-pri:hover::after{opacity:1;}
+.btn-pri:active{transform:scale(.97);}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border:1.5px solid var(–border2);border-radius:12px;background:var(–glass2);color:var(–text);font-family:‘Inter’,sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s;backdrop-filter:blur(10px);}
+.btn-ghost:hover{border-color:var(–a2);color:var(–a);background:var(–al);transform:translateY(-1px);}
+
+/* ── HOME ── */
+.home-wrap{max-width:1060px;margin:0 auto;padding:40px 20px 60px;}
+.hero{text-align:center;padding:14px 0 42px;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 15px;border-radius:100px;background:var(–al);border:1px solid var(–border2);color:var(–a);font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:22px;animation:fadeUp .5s .1s both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.hero h1{font-family:‘Syne’,sans-serif;font-size:clamp(2.1rem,5vw,3.5rem);font-weight:800;line-height:1.1;margin-bottom:14px;animation:fadeUp .6s .18s both;}
+.hero h1 .gr{background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 50%,#60a5fa 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:grS 5s ease infinite;}
+@keyframes grS{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero p{color:var(–sub);font-size:1.05rem;line-height:1.7;max-width:510px;margin:0 auto 28px;animation:fadeUp .6s .26s both;}
+.hero-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .34s both;}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;animation:fadeUp .6s .42s both;}
+.stat{background:var(–glass);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:18px 14px;text-align:center;box-shadow:var(–sh);transition:transform .22s,box-shadow .22s;position:relative;overflow:hidden;}
+.stat::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#3b82f6,#60a5fa,#93c5fd);background-size:200% 100%;animation:grS 4s ease infinite;}
+.stat:hover{transform:translateY(-3px);box-shadow:var(–sh2);}
+.stat-n{font-family:‘Syne’,sans-serif;font-size:2rem;font-weight:800;background:linear-gradient(135deg,#2563eb,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-l{color:var(–sub);font-size:.79rem;margin-top:3px;}
+
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;animation:fadeUp .6s .5s both;}
+.feat{background:var(–glass);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:22px 18px;box-shadow:var(–sh);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s;}
+.feat:hover{transform:translateY(-4px);box-shadow:var(–sh2);}
+.feat-ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;}
+.feat h3{font-size:.97rem;font-weight:700;margin-bottom:7px;}
+.feat p{color:var(–sub);font-size:.86rem;line-height:1.65;}
+
+/* ── THEORY PICK ── */
+.theory-wrap{max-width:980px;margin:0 auto;padding:28px 20px 60px;}
+.page-hdr{margin-bottom:24px;}
+.page-hdr h2{font-family:‘Syne’,sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:5px;display:flex;align-items:center;gap:9px;}
+.page-hdr h2 i{color:var(–a);font-size:1.35rem;}
+.page-hdr p{color:var(–sub);font-size:.93rem;line-height:1.6;}
+
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:11px;}
+.tcard{background:var(–glass);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:20px 18px;box-shadow:var(–sh);cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .2s;position:relative;overflow:hidden;animation:cardIn .5s both;}
+.tcard:nth-child(1){animation-delay:.04s}.tcard:nth-child(2){animation-delay:.08s}.tcard:nth-child(3){animation-delay:.12s}
+.tcard:nth-child(4){animation-delay:.16s}.tcard:nth-child(5){animation-delay:.20s}.tcard:nth-child(6){animation-delay:.24s}.tcard:nth-child(7){animation-delay:.28s}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.tcard::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .25s;background:linear-gradient(90deg,#3b82f6,#93c5fd);}
+.tcard:hover{transform:translateY(-4px);box-shadow:var(–sh2);border-color:rgba(59,130,246,.3);}
+.tcard:hover::before{opacity:1;}
+.tcard:active{transform:scale(.98);}
+.tcard-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px;transition:transform .22s;}
+.tcard:hover .tcard-ico{transform:scale(1.1) rotate(-4deg);}
+.tcard-title{font-weight:700;font-size:.97rem;margin-bottom:4px;}
+.tcard-desc{color:var(–sub);font-size:.81rem;line-height:1.55;margin-bottom:10px;}
+.tcard-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:.71rem;font-weight:600;}
+.tcard-arr{position:absolute;bottom:17px;right:15px;font-size:.8rem;opacity:0;transition:opacity .2s,transform .2s;transform:translateX(-6px);}
+.tcard:hover .tcard-arr{opacity:1;transform:translateX(0);}
+
+/* theory detail */
+.tdetail{display:none;animation:pgIn .35s both;}
+.tdetail.show{display:block;}
+.tdetail-topbar{display:flex;align-items:center;gap:9px;margin-bottom:20px;flex-wrap:wrap;}
+.btn-back{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(–border2);border-radius:10px;background:var(–glass2);color:var(–sub);font-size:.84rem;font-weight:500;cursor:pointer;transition:all .18s;flex-shrink:0;}
+.btn-back:hover{border-color:var(–a2);color:var(–a);background:var(–al);}
+.tdetail-nav{display:flex;gap:7px;margin-left:auto;}
+.btn-nav{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1.5px solid var(–border2);border-radius:10px;background:var(–glass2);color:var(–sub);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .18s;}
+.btn-nav:hover:not(:disabled){border-color:var(–a2);color:var(–a);background:var(–al);}
+.btn-nav:disabled{opacity:.3;cursor:default;pointer-events:none;}
+
+.detail-hdr{background:var(–glass);backdrop-filter:blur(20px) saturate(200%);-webkit-backdrop-filter:blur(20px) saturate(200%);border:1px solid rgba(255,255,255,.93);border-radius:20px;padding:22px 24px;margin-bottom:14px;box-shadow:var(–sh2);display:flex;gap:15px;align-items:flex-start;position:relative;overflow:hidden;}
+.detail-hdr::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#2563eb,#60a5fa,#93c5fd);background-size:200% 100%;animation:grS 4s ease infinite;}
+.dh-ico{width:52px;height:52px;border-radius:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.dh-info h3{font-family:‘Syne’,sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+.dh-info p{color:var(–sub);font-size:.89rem;line-height:1.6;}
+.prog-bar{margin-top:9px;height:3px;background:rgba(59,130,246,.12);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:3px;transition:width .5s cubic-bezier(.16,1,.3,1);}
+
+.dsections{display:flex;flex-direction:column;gap:9px;}
+.dsec{background:var(–glass);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);border:1px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:var(–sh);overflow:hidden;animation:secSl .4s both;}
+.dsec:nth-child(1){animation-delay:.05s}.dsec:nth-child(2){animation-delay:.10s}.dsec:nth-child(3){animation-delay:.15s}
+.dsec:nth-child(4){animation-delay:.20s}.dsec:nth-child(5){animation-delay:.25s}
+@keyframes secSl{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.dsec-hdr{display:flex;align-items:center;gap:10px;padding:14px 17px;border-bottom:1px solid var(–border);}
+.dsec-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.dsec-title{font-weight:700;font-size:.89rem;}
+.dsec-body{padding:15px 17px;}
+.formula-box{background:linear-gradient(135deg,rgba(239,246,255,.8),rgba(219,234,254,.6));backdrop-filter:blur(8px);border:1px solid rgba(37,99,235,.18);border-radius:12px;padding:14px 17px;font-family:‘JetBrains Mono’,monospace;font-size:.9rem;color:#1d4ed8;line-height:2.0;box-shadow:0 1px 4px rgba(37,99,235,.06);}
+.algo-list{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:8px;}
+.algo-list li{counter-increment:s;display:flex;align-items:flex-start;gap:10px;font-size:.89rem;line-height:1.65;}
+.algo-list li::before{content:counter(s);width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(96,165,250,.08));border:1px solid rgba(37,99,235,.2);color:var(–a);margin-top:1px;}
+.lifehack-box{background:linear-gradient(135deg,rgba(255,237,213,.7),rgba(254,215,170,.5));border:1px solid rgba(217,119,6,.22);border-radius:10px;padding:14px 16px;font-size:.88rem;color:#92400e;line-height:1.7;backdrop-filter:blur(8px);}
+.warn-box{background:linear-gradient(135deg,rgba(254,226,226,.7),rgba(252,165,165,.3));border:1px solid rgba(220,38,38,.22);border-radius:10px;padding:14px 16px;font-size:.88rem;color:#991b1b;line-height:1.7;backdrop-filter:blur(8px);}
+.example-card{background:rgba(255,255,255,.65);backdrop-filter:blur(10px);border:1px solid rgba(37,99,235,.14);border-radius:12px;padding:15px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(37,99,235,.06);}
+.example-card:last-child{margin-bottom:0;}
+.ex-eq{font-family:‘JetBrains Mono’,monospace;color:var(–a);font-size:.91rem;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(37,99,235,.1);}
+.ex-steps{display:flex;flex-direction:column;gap:6px;}
+.ex-row{display:flex;gap:8px;font-size:.86rem;color:var(–sub);line-height:1.6;}
+.ex-n{color:var(–a2);font-weight:700;flex-shrink:0;width:17px;font-size:.78rem;}
+.sub-list{display:flex;flex-direction:column;gap:4px;}
+.sub-row{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:.85rem;color:var(–sub);transition:background .15s;}
+.sub-row:hover{background:var(–al);color:var(–text);}
+.sub-n{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.67rem;font-weight:700;background:var(–al);color:var(–a);}
+
+/* ── PRACTICE ── */
+.practice-wrap{max-width:1140px;margin:0 auto;padding:26px 20px 60px;display:grid;grid-template-columns:285px 1fr;gap:18px;align-items:start;}
+.settings{background:var(–glass);backdrop-filter:blur(22px) saturate(200%);-webkit-backdrop-filter:blur(22px) saturate(200%);border:1px solid rgba(255,255,255,.93);border-radius:20px;padding:19px;box-shadow:var(–sh2);position:sticky;top:76px;}
+.settings h3{font-weight:700;font-size:.98rem;margin-bottom:4px;display:flex;align-items:center;gap:7px;}
+.settings h3 i{color:var(–a);}
+.settings .sub{color:var(–sub);font-size:.78rem;line-height:1.5;margin-bottom:14px;}
+.cb-group{display:flex;flex-direction:column;gap:4px;margin-bottom:15px;}
+.cb-row{display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background .15s;user-select:none;}
+.cb-row:hover{background:var(–al);}
+.cb-row input{width:14px;height:14px;accent-color:var(–a);cursor:pointer;flex-shrink:0;}
+.cb-label{font-size:.85rem;display:flex;align-items:center;gap:6px;color:var(–text);}
+.cb-label i{font-size:.73rem;opacity:.65;color:var(–a);}
+.cb-all{padding-bottom:9px;border-bottom:1px solid var(–border);margin-bottom:2px;}
+.cb-all .cb-label{font-weight:600;color:var(–a);}
+.btn-gen{width:100%;padding:12px;background:linear-gradient(135deg,#2563eb,#60a5fa);border:none;border-radius:11px;color:#fff;font-family:‘Inter’,sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .22s;margin-bottom:8px;box-shadow:0 3px 12px rgba(37,99,235,.3);display:flex;align-items:center;justify-content:center;gap:7px;}
+.btn-gen:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.42);}
+.btn-gen:active{transform:scale(.97);}
+.btn-gen .si{transition:transform .0s;}
+.btn-gen.spin .si{animation:spinOnce .45s ease;}
+@keyframes spinOnce{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.btn-any{width:100%;padding:9px;background:var(–glass2);border:1.5px solid var(–border2);border-radius:11px;color:var(–text);font-family:‘Inter’,sans-serif;font-size:.84rem;font-weight:500;cursor:pointer;transition:all .18s;margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.btn-any:hover{border-color:var(–a2);color:var(–a);background:var(–al);}
+.score-box{background:var(–al);border:1.5px solid rgba(37,99,235,.18);border-radius:11px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;}
+.score-label{font-size:.79rem;color:var(–sub);display:flex;align-items:center;gap:5px;}
+.score-label i{color:var(–a);}
+.score-val{font-family:‘Syne’,sans-serif;font-weight:800;font-size:1.25rem;color:var(–a);}
+.btn-reset{background:none;border:none;color:var(–dim);cursor:pointer;font-size:.76rem;transition:color .15s;}
+.btn-reset:hover{color:var(–red);}
+
+.practice-main{display:flex;flex-direction:column;gap:13px;}
+.eq-box{background:var(–glass);backdrop-filter:blur(20px) saturate(200%);-webkit-backdrop-filter:blur(20px) saturate(200%);border:1px solid rgba(255,255,255,.93);border-radius:20px;box-shadow:var(–sh2);padding:30px 22px;text-align:center;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;}
+.eq-box::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#2563eb,#60a5fa,#93c5fd);background-size:200% 100%;animation:grS 4s ease infinite;}
+.eq-badge{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(–sub);padding:3px 10px;border:1px solid var(–border);border-radius:100px;background:rgba(255,255,255,.8);}
+.eq-text{font-family:‘JetBrains Mono’,monospace;font-size:clamp(.95rem,2.8vw,1.45rem);color:var(–text);font-weight:600;animation:eqPop .32s cubic-bezier(.16,1,.3,1) both;}
+@keyframes eqPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.eq-ph{color:var(–dim);font-size:.92rem;display:flex;align-items:center;gap:7px;}
+
+.answer-box{background:var(–glass);backdrop-filter:blur(18px) saturate(200%);-webkit-backdrop-filter:blur(18px) saturate(200%);border:1px solid rgba(255,255,255,.91);border-radius:18px;box-shadow:var(–sh);padding:19px;}
+.answer-box h4{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(–dim);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+.answer-box h4 i{color:var(–a2);}
+.ans-input{width:100%;background:rgba(255,255,255,.9);border:1.5px solid var(–border2);border-radius:10px;padding:11px 15px;font-family:‘JetBrains Mono’,monospace;font-size:.95rem;color:var(–text);outline:none;transition:border-color .18s,box-shadow .18s;margin-bottom:11px;}
+.ans-input::placeholder{color:var(–dim);}
+.ans-input:focus{border-color:var(–a2);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.ans-input.err{border-color:var(–red);box-shadow:0 0 0 3px rgba(220,38,38,.1);animation:shake .3s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.act-btns{display:flex;gap:9px;flex-wrap:wrap;}
+.btn-check{flex:1;padding:11px 18px;background:linear-gradient(135deg,#16a34a,#22c55e);border:none;border-radius:10px;color:#fff;font-family:‘Inter’,sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 3px 10px rgba(22,163,74,.28);display:flex;align-items:center;justify-content:center;gap:7px;}
+.btn-check:hover{filter:brightness(1.07);transform:translateY(-1px);}
+.btn-check:active{transform:scale(.97);}
+.btn-skip{padding:11px 16px;background:var(–glass2);border:1.5px solid var(–border2);border-radius:10px;color:var(–sub);font-family:‘Inter’,sans-serif;font-size:.86rem;font-weight:500;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px;}
+.btn-skip:hover{color:var(–text);background:rgba(255,255,255,.95);}
+
+.feedback{display:none;border-radius:16px;padding:18px;animation:pgIn .28s both;}
+.feedback.ok{display:block;background:rgba(220,252,231,.72);border:1px solid rgba(22,163,74,.2);backdrop-filter:blur(10px);}
+.feedback.bad{display:block;background:rgba(254,226,226,.72);border:1px solid rgba(220,38,38,.18);backdrop-filter:blur(10px);}
+.fb-hdr{display:flex;align-items:center;gap:10px;margin-bottom:13px;}
+.fb-ico{width:37px;height:37px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ok .fb-ico{background:rgba(22,163,74,.14);color:var(–green);}
+.bad .fb-ico{background:rgba(220,38,38,.14);color:var(–red);}
+.fb-verdict{font-family:‘Syne’,sans-serif;font-size:1.1rem;font-weight:800;}
+.ok .fb-verdict{color:var(–green)}.bad .fb-verdict{color:var(–red);}
+.fb-ans{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:9px 12px;background:rgba(255,255,255,.65);border-radius:9px;}
+.fb-ans-l{font-size:.73rem;color:var(–dim);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;}
+.fb-ans-v{font-family:‘JetBrains Mono’,monospace;color:var(–a);font-size:.92rem;font-weight:600;}
+.exp-title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(–dim);margin-bottom:9px;display:flex;align-items:center;gap:5px;}
+.exp-title i{color:var(–a2);}
+.exp-step{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:.87rem;color:var(–sub);line-height:1.6;}
+.exp-step:last-child{border-bottom:none;}
+.exp-n{width:21px;height:21px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:700;background:var(–al);color:var(–a);}
+.exp-note{margin-top:11px;padding:8px 12px;background:var(–gol);border:1px solid rgba(217,119,6,.18);border-radius:8px;font-size:.83rem;color:#92400e;display:flex;gap:7px;align-items:flex-start;}
+
+/* ── BENEFITS ── */
+.benefits-wrap{max-width:840px;margin:0 auto;padding:28px 20px 60px;}
+.ben-list{display:flex;flex-direction:column;gap:9px;margin-bottom:36px;}
+.ben-item{background:var(–glass);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);border:1px solid rgba(255,255,255,.9);border-radius:16px;box-shadow:var(–sh);overflow:hidden;transition:border-color .2s,box-shadow .2s;animation:cardIn .4s both;}
+.ben-item:nth-child(1){animation-delay:.04s}.ben-item:nth-child(2){animation-delay:.08s}.ben-item:nth-child(3){animation-delay:.12s}
+.ben-item:nth-child(4){animation-delay:.16s}.ben-item:nth-child(5){animation-delay:.20s}.ben-item:nth-child(6){animation-delay:.24s}
+.ben-item.open{border-color:rgba(59,130,246,.28);box-shadow:var(–sh2);}
+.ben-trigger{display:flex;align-items:center;gap:12px;padding:15px 17px;cursor:pointer;transition:background .15s;user-select:none;background:none;border:none;width:100%;text-align:left;}
+.ben-trigger:hover{background:rgba(37,99,235,.04);}
+.ben-ico{width:39px;height:39px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.ben-txt{flex:1;}
+.ben-title{font-weight:700;font-size:.93rem;color:var(–text);}
+.ben-hint{color:var(–dim);font-size:.78rem;margin-top:2px;}
+.ben-chev{color:var(–dim);transition:transform .3s,color .2s;flex-shrink:0;}
+.ben-item.open .ben-chev{transform:rotate(180deg);color:var(–a);}
+.ben-body{max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.16,1,.3,1);padding:0 17px;}
+.ben-item.open .ben-body{max-height:200px;padding:0 17px 17px;}
+.ben-body p{color:var(–sub);font-size:.87rem;line-height:1.7;padding-top:11px;border-top:1px solid var(–border);}
+
+.cta{border-radius:22px;padding:40px 34px;text-align:center;background:linear-gradient(135deg,rgba(37,99,235,.07),rgba(96,165,250,.08),rgba(147,197,253,.06));border:1px solid rgba(59,130,246,.2);box-shadow:var(–sh);position:relative;overflow:hidden;}
+.cta::before{content:’’;position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.12),transparent 70%);}
+.cta h2{font-family:‘Syne’,sans-serif;font-size:1.75rem;font-weight:800;margin-bottom:9px;position:relative;z-index:1;}
+.cta p{color:var(–sub);font-size:.93rem;line-height:1.65;margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto;position:relative;z-index:1;}
+.cta .btn-pri{position:relative;z-index:1;}
+
+footer{text-align:center;padding:20px;color:var(–dim);font-size:.78rem;border-top:1px solid var(–border);position:relative;z-index:1;background:rgba(255,255,255,.35);}
+
+@media(max-width:880px){.features,.stats{grid-template-columns:1fr 1fr;}.practice-wrap{grid-template-columns:1fr;}.settings{position:static;}}
+@media(max-width:620px){
+nav{padding:0 12px;gap:2px;}.logo-text{display:none;}
+.nav-tab{padding:7px 9px;font-size:.81rem;}.nav-tab span{display:none;}.nav-tab i{font-size:.88rem;}
+.features,.stats{grid-template-columns:1fr;}.tgrid{grid-template-columns:1fr;}
+.home-wrap,.theory-wrap,.benefits-wrap{padding:16px 13px 46px;}
+.act-btns{flex-direction:column;}.tdetail-nav{display:none;}
+.detail-hdr{flex-direction:column;gap:11px;}
+}
+</style>
+
+</head>
+<body>
+<div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+
+<nav>
+  <div class="logo" onclick="goPage('home')">
+    <div class="logo-icon"><i class="fas fa-square-root-variable"></i></div>
+    <span class="logo-text">ЕГЭ Тренажёр</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goPage('home')" data-p="home"><i class="fas fa-house"></i><span>Главная</span></button>
+    <button class="nav-tab" onclick="goPage('theory')" data-p="theory"><i class="fas fa-book-open"></i><span>Теория</span></button>
+    <button class="nav-tab" onclick="goPage('practice')" data-p="practice"><i class="fas fa-dumbbell"></i><span>Практика</span></button>
+    <button class="nav-tab" onclick="goPage('benefits')" data-p="benefits"><i class="fas fa-star"></i><span>Польза</span></button>
+  </div>
+</nav>
+
+<!-- HOME -->
+
+<div id="pg-home" class="page active">
+<div class="home-wrap">
+  <section class="hero">
+    <div class="hero-badge"><i class="fas fa-graduation-cap"></i>ЕГЭ · Профильный · 2025</div>
+    <h1>Уравнения ЕГЭ —<br><span class="gr">понятно и просто</span></h1>
+    <p>Теория по 7 типам, бесконечная практика и пошаговый разбор каждого решения. Всё в одном файле.</p>
+    <div class="hero-btns">
+      <button class="btn-pri" onclick="goPage('practice')"><i class="fas fa-play"></i>Начать тренировку</button>
+      <button class="btn-ghost" onclick="goPage('theory')"><i class="fas fa-book-open"></i>Изучить теорию</button>
+    </div>
+  </section>
+  <div class="stats">
+    <div class="stat"><div class="stat-n">7</div><div class="stat-l"><i class="fas fa-shapes" style="margin-right:4px;color:var(--a)"></i>Типов уравнений</div></div>
+    <div class="stat"><div class="stat-n">80+</div><div class="stat-l"><i class="fas fa-sitemap" style="margin-right:4px;color:var(--a)"></i>Подтипов задач</div></div>
+    <div class="stat"><div class="stat-n">∞</div><div class="stat-l"><i class="fas fa-infinity" style="margin-right:4px;color:var(--a)"></i>Уравнений в практике</div></div>
+  </div>
+  <div class="features">
+    <div class="feat"><div class="feat-ico" style="background:rgba(37,99,235,.1)"><i class="fas fa-layer-group" style="color:#2563eb"></i></div><h3>Структурированная теория</h3><p>7 типов с алгоритмами, формулами и разборами. Понятно и по делу.</p></div>
+    <div class="feat"><div class="feat-ico" style="background:rgba(96,165,250,.15)"><i class="fas fa-crosshairs" style="color:#3b82f6"></i></div><h3>Умная практика</h3><p>Генератор меняет структуру задачи — каждое уравнение новый вызов.</p></div>
+    <div class="feat"><div class="feat-ico" style="background:rgba(147,197,253,.2)"><i class="fas fa-lightbulb" style="color:#60a5fa"></i></div><h3>Разбор ошибок</h3><p>Пошаговое объяснение после каждого ответа. Понимание вместо зубрёжки.</p></div>
+  </div>
+</div>
+<footer>Даниил Гибанов &bull; Индивидуальный проект &bull; 2024</footer>
+</div>
+
+<!-- THEORY -->
+
+<div id="pg-theory" class="page">
+<div class="theory-wrap">
+  <div id="tpick">
+    <div class="page-hdr"><h2><i class="fas fa-book-open"></i>Справочник теории</h2><p>Выберите тип уравнения — откроется подробная страница с алгоритмом, формулами и примерами.</p></div>
+    <div class="tgrid" id="tgrid"></div>
+  </div>
+  <div id="tdetail" class="tdetail">
+    <div class="tdetail-topbar">
+      <button class="btn-back" onclick="closeDetail()"><i class="fas fa-arrow-left"></i>К выбору</button>
+      <div class="tdetail-nav">
+        <button class="btn-nav" id="btn-prev" onclick="navDetail(-1)"><i class="fas fa-chevron-left"></i>Предыдущее</button>
+        <button class="btn-nav" id="btn-next" onclick="navDetail(1)">Следующее<i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div id="detail-inner"></div>
+  </div>
+</div>
+</div>
+
+<!-- PRACTICE -->
+
+<div id="pg-practice" class="page">
+<div class="practice-wrap">
+  <div class="settings">
+    <h3><i class="fas fa-sliders"></i>Настройки</h3>
+    <p class="sub">Выберите типы уравнений для тренировки</p>
+    <div class="cb-group">
+      <label class="cb-row cb-all"><input type="checkbox" id="cb-all" onchange="toggleAll(this)"><span class="cb-label"><i class="fas fa-check-double"></i>Все типы (5)</span></label>
+      <label class="cb-row"><input type="checkbox" class="eqt" value="quadratic" checked><span class="cb-label"><i class="fas fa-superscript"></i>Квадратные</span></label>
+      <label class="cb-row"><input type="checkbox" class="eqt" value="irrational" checked><span class="cb-label"><i class="fas fa-square-root-variable"></i>Иррациональные</span></label>
+
+```
+  <label class="cb-row"><input type="checkbox" class="eqt" value="symmetric" checked><span class="cb-label"><i class="fas fa-arrows-left-right"></i>Симметрические</span></label>
+  <label class="cb-row"><input type="checkbox" class="eqt" value="homogeneous" checked><span class="cb-label"><i class="fas fa-circle-half-stroke"></i>Однородные</span></label>
+  <label class="cb-row"><input type="checkbox" class="eqt" value="trig" checked><span class="cb-label"><i class="fas fa-circle-nodes"></i>Тригонометрические</span></label>
+</div>
+<button class="btn-gen" id="btn-gen" onclick="doGen()"><i class="fas fa-shuffle si"></i>Сгенерировать</button>
+<button class="btn-any" onclick="genAny()"><i class="fas fa-dice"></i>Любой тип</button>
+<div class="score-box">
+  <span class="score-label"><i class="fas fa-trophy"></i>Решено</span>
+  <span id="sv" class="score-val">0</span>
+  <button class="btn-reset" onclick="resetScore()" title="Сбросить"><i class="fas fa-rotate-left"></i></button>
+</div>
+```
+
+  </div>
+  <div class="practice-main">
+    <div class="eq-box" id="eq-box"><div class="eq-ph"><i class="fas fa-arrow-left"></i>Нажмите «Сгенерировать» для начала</div></div>
+    <div class="answer-box">
+      <h4><i class="fas fa-pen-to-square"></i>Ваш ответ</h4>
+      <input id="ans" class="ans-input" type="text" placeholder="Например: 2;3 или x=2, x=3 или 2 и 3" onkeydown="if(event.key==='Enter')check()">
+      <div class="act-btns">
+        <button class="btn-check" onclick="check()"><i class="fas fa-check"></i>Проверить</button>
+        <button class="btn-skip" onclick="doGen()"><i class="fas fa-forward"></i>Пропустить</button>
+      </div>
+    </div>
+    <div id="fb" class="feedback"></div>
+  </div>
+</div>
+</div>
+
+<!-- BENEFITS -->
+
+<div id="pg-benefits" class="page">
+<div class="benefits-wrap">
+  <div class="page-hdr"><h2><i class="fas fa-rocket"></i>Почему это работает?</h2><p>Нажмите на любой пункт, чтобы развернуть объяснение.</p></div>
+  <div class="ben-list" id="ben-list"></div>
+  <div class="cta">
+    <h2>Готовы к экзамену?</h2>
+    <p>Математика — не зубрёжка, а понимание правил игры. Начните прямо сейчас.</p>
+    <button class="btn-pri" onclick="goPage('practice')"><i class="fas fa-play"></i>Начать тренировку</button>
+  </div>
+</div>
+<footer>Даниил Гибанов &bull; Индивидуальный проект &bull; 2024</footer>
+</div>
+
+<script>
+'use strict';
+// ── NAV ──
+let curP='home';
+function goPage(p){
+  if(p===curP)return;curP=p;
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  const pg=document.getElementById('pg-'+p);
+  pg.classList.add('active');pg.style.animation='none';void pg.offsetWidth;pg.style.animation='pgIn .38s cubic-bezier(.16,1,.3,1) both';
+  document.querySelector('[data-p="'+p+'"]')?.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── HELPERS ──
+const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const rNZ=(a,b)=>{let v;do{v=ri(a,b);}while(!v);return v;};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const rt=(n,d=4)=>Math.round(n*10**d)/10**d;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const sg=n=>n>=0?`+${n}`:`${n}`;
+
+// ── THEORY DATA ──
+const T=[
+  {id:'quadratic',ico:'fas fa-superscript',bg:'rgba(37,99,235,.1)',ic:'#2563eb',
+   title:'Квадратные уравнения',short:'ax² + bx + c = 0. Основа для решения большинства задач ЕГЭ.',
+   sub:['ax²+bx+c=0 (дискриминант)','ax²+bx=0 (вынос x)','ax²+c=0','Приведённое x²+bx+c','a+b+c=0 → x₁=1','a−b+c=0 → x₁=−1','(ax+b)(cx+d)=0','Теорема Виета (подбор)','Биквадратное t=x²','Дробные коэффициенты'],
+   form:'ax² + bx + c = 0,  где a ≠ 0',
+   algo:[
+     'Записать уравнение в стандартном виде ax²+bx+c=0.',
+     'Определить коэффициенты a, b, c.',
+     'Вычислить дискриминант: <b>D = b² − 4ac</b>.',
+     'D > 0 → два различных корня: x₁,₂ = (−b ± √D) / (2a).',
+     'D = 0 → один корень (два совпадающих): x = −b / (2a).',
+     'D < 0 → действительных корней нет.'
+   ],
+   formulas:['D = b² − 4ac','x₁,₂ = (−b ± √D) / (2a)','Виета: x₁+x₂ = −b/a,  x₁·x₂ = c/a','Приведённое: x₁+x₂ = −p,  x₁·x₂ = q'],
+   tip:'<i class="fas fa-bolt" style="margin-right:5px"></i>Если a+b+c=0, то x₁=1, x₂=c/a. Если a−b+c=0, то x₁=−1, x₂=−c/a. Проверяйте это первым делом — экономит 2 минуты!',
+   ex:[
+     {eq:'x² − 5x + 6 = 0',s:['a=1, b=−5, c=6.','Теорема Виета: x₁+x₂=5, x₁·x₂=6.','Подбор: 2 и 3 (2+3=5, 2·3=6). ✓','Ответ: x=2; x=3.']},
+     {eq:'2x² − 3x − 2 = 0',s:['D = (−3)² − 4·2·(−2) = 9 + 16 = 25.','x₁ = (3 + 5) / 4 = 2.','x₂ = (3 − 5) / 4 = −0.5.','Ответ: x = −0.5; x = 2.']},
+     {eq:'x² − 6x + 9 = 0',s:['D = 36 − 36 = 0.','x = 6/2 = 3 (один корень).','Ответ: x = 3.']}
+   ]},
+  {id:'irrational',ico:'fas fa-square-root-variable',bg:'rgba(124,58,237,.1)',ic:'#7c3aed',
+   title:'Иррациональные уравнения',short:'Переменная под знаком корня √. Ключевой момент — проверка!',
+   sub:['√(ax+b) = c','√(ax+b) = cx+d','√(ax+b) + √(cx+d) = k','√(ax+b) − √(cx+d) = k','√(ax+b) = √(cx+d)','x + √(ax+b) = c','√(x²+px+q) = r','√(ax+b) = x','∛(ax+b) = c','√(ax) = c','2√(x+b) = c','√((x+a)(x+b)) = c'],
+   form:'√(f(x)) = g(x)',
+   algo:[
+     '<b>ОДЗ:</b> подкоренное выражение f(x) ≥ 0.',
+     'Убедиться, что правая часть g(x) ≥ 0 (иначе нет решений).',
+     'Уединить корень в одной части уравнения.',
+     'Возвести обе части в квадрат (или в нужную степень).',
+     'Решить полученное уравнение (обычно квадратное).',
+     '<b>ОБЯЗАТЕЛЬНО</b> проверить каждый корень подстановкой в исходное!'
+   ],
+   formulas:['ОДЗ: f(x) ≥ 0','√(f) = g ⟺ f = g² при условии g ≥ 0','√(f) = √(g) ⟺ f = g при f ≥ 0'],
+   warn:'<i class="fas fa-triangle-exclamation" style="margin-right:5px"></i>Возведение в квадрат — необратимая операция! Появляются посторонние корни. Проверяйте КАЖДОЕ найденное значение подстановкой в исходное уравнение.',
+   ex:[
+     {eq:'√(x + 3) = x − 3',s:['ОДЗ: x+3 ≥ 0 и x−3 ≥ 0, значит x ≥ 3.','Возводим в квадрат: x+3 = (x−3)² = x²−6x+9.','x² − 7x + 6 = 0 → x=6 или x=1.','x=1: не удовлетворяет ОДЗ (1 < 3). Отбрасываем.','Ответ: x = 6.']},
+     {eq:'√(2x − 1) = 3',s:['ОДЗ: 2x−1 ≥ 0 → x ≥ 0.5.','2x−1 = 9 → x = 5.','Проверка: √(10−1) = √9 = 3. ✓','Ответ: x = 5.']}
+   ]},
+  {id:'exponential',ico:'fas fa-arrow-up-right-dots',bg:'rgba(217,119,6,.1)',ic:'#d97706',
+   title:'Показательные уравнения',short:'Неизвестное в показателе степени. Замена переменной t = aˣ.',
+   sub:['aˣ = aᵏ (одно основание)','a^{2x} + k·aˣ + c = 0 (замена t)','a^{x+1} + aˣ = b','aˣ + a^{−x} = c (симметрия)','a^{2x} − aˣ = c','aˣ · bˣ = (ab)ⁿ','a^{x²−kx} = 1','a^{2x+1} = b','4ˣ + 2ˣ − 6 = 0','9ˣ − 4·3ˣ + 3 = 0'],
+   form:'a^{f(x)} = a^{g(x)},  a > 0, a ≠ 1',
+   algo:[
+     'Попробовать привести к одному основанию → приравнять показатели.',
+     'Или сделать замену: t = aˣ, при этом t > 0 всегда!',
+     'Получить квадратное (или линейное) уравнение относительно t.',
+     'Решить уравнение, отбросить t ≤ 0 (aˣ > 0 при любом x).',
+     'Найти x из уравнения aˣ = t.'
+   ],
+   formulas:['a^{f} = a^{g} ⟺ f = g','Замена: t = aˣ, t > 0','log_a(aˣ) = x','a⁰ = 1 (полезно для a^{f(x)} = 1)'],
+   tip:'<i class="fas fa-bolt" style="margin-right:5px"></i>При замене t = aˣ — t > 0 ВСЕГДА! Функция aˣ принимает только положительные значения. Отрицательные t отбрасываем без колебаний.',
+   ex:[
+     {eq:'4ˣ − 3·2ˣ + 2 = 0',s:['Замена: t = 2ˣ, t > 0. Тогда 4ˣ = (2²)ˣ = t².','t² − 3t + 2 = 0 → (t−1)(t−2) = 0.','t = 1: 2ˣ = 1 = 2⁰ → x = 0.','t = 2: 2ˣ = 2¹ → x = 1.','Ответ: x = 0; x = 1.']},
+     {eq:'3^{2x+1} − 28·3ˣ + 9 = 0',s:['3·(3ˣ)² − 28·3ˣ + 9 = 0.','Замена t = 3ˣ > 0: 3t² − 28t + 9 = 0.','D = 784 − 108 = 676. t = (28±26)/6.','t = 9 → x = 2;  t = 1/3 → x = −1.','Ответ: x = −1; x = 2.']}
+   ]},
+  {id:'logarithmic',ico:'fas fa-wave-square',bg:'rgba(16,185,129,.1)',ic:'#059669',
+   title:'Логарифмические уравнения',short:'Неизвестное под знаком log. ОДЗ — первым делом!',
+   sub:['log_a(f) = b (простейшее)','log_a(f) + log_a(g) = c','log_a(f) − log_a(g) = c','log_a(f) = log_a(g)','log²_a(x) + k·log_a(x) = c (замена t)','log_a(x²) = k','2·log_a(x) = log_a(k)','log_a(ax+b) = 2','log_a(x) + log_x(a) = 2','|log_a(x)| = k'],
+   form:'log_a(f(x)) = b,  a > 0, a ≠ 1, f(x) > 0',
+   algo:[
+     '<b>ОДЗ ПЕРВЫМ ДЕЛОМ:</b> все аргументы логарифмов > 0.',
+     'По определению: log_a(f) = b ⟺ f = aᵇ.',
+     'Применить свойства: log(uv) = log u + log v; log(u/v) = log u − log v.',
+     'Решить полученное уравнение.',
+     'Проверить, что корни входят в ОДЗ.'
+   ],
+   formulas:['ОДЗ: f(x) > 0','log_a(uv) = log_a u + log_a v','log_a(u/v) = log_a u − log_a v','log_a(uⁿ) = n·log_a u','log_a(1) = 0;  log_a(a) = 1'],
+   tip:'<i class="fas fa-bolt" style="margin-right:5px"></i>ОДЗ — первой строкой решения! Половина ошибок на ЕГЭ — это корни, не удовлетворяющие ОДЗ. Никогда не пропускайте этот шаг.',
+   ex:[
+     {eq:'log₂(x+1) + log₂(x−1) = 3',s:['ОДЗ: x+1 > 0 и x−1 > 0 → x > 1.','log₂((x+1)(x−1)) = 3 → log₂(x²−1) = 3.','x² − 1 = 2³ = 8 → x² = 9.','x = 3 (x = −3 не входит в ОДЗ).','Ответ: x = 3.']},
+     {eq:'log₃(x²−2x) = log₃(3)',s:['ОДЗ: x²−2x > 0 → x < 0 или x > 2.','x² − 2x = 3 → x² − 2x − 3 = 0.','x = 3 или x = −1.','Оба входят в ОДЗ.','Ответ: x = −1; x = 3.']}
+   ]},
+  {id:'symmetric',ico:'fas fa-arrows-left-right',bg:'rgba(99,102,241,.1)',ic:'#6366f1',
+   title:'Симметрические (возвратные) уравнения',short:'Коэффициенты симметричны. Метод: замена t = x + 1/x.',
+   sub:['ax⁴+bx³+cx²+bx+a = 0 (4-й степени)','ax³+bx²+bx+a = 0 (3-й степени)','Биквадратное x⁴+bx²+c = 0','Знакопеременные коэффициенты','Проверка x = 0'],
+   form:'ax⁴ + bx³ + cx² + bx + a = 0',
+   algo:[
+     'Убедиться, что x = 0 не является корнем (подстановкой).',
+     'Разделить обе части уравнения на x² (x ≠ 0).',
+     'Сгруппировать: (x² + 1/x²) и (x + 1/x).',
+     'Сделать замену: t = x + 1/x, тогда x² + 1/x² = t² − 2.',
+     'Решить квадратное уравнение относительно t.',
+     'Из каждого t найти x: x + 1/x = t → x² − tx + 1 = 0.'
+   ],
+   formulas:['t = x + 1/x','x² + 1/x² = t² − 2','x³ + 1/x³ = t³ − 3t','При t: x² − tx + 1 = 0'],
+   warn:'<i class="fas fa-triangle-exclamation" style="margin-right:5px"></i>Перед делением на x² ОБЯЗАТЕЛЬНО проверьте: является ли x = 0 корнем? Подставьте x = 0 в исходное. Если да — запишите корень отдельно.',
+   ex:[
+     {eq:'x⁴ − 5x³ + 6x² − 5x + 1 = 0',s:['x = 0 не корень (1 ≠ 0). Делим на x².','x² − 5x + 6 − 5/x + 1/x² = 0.','(x² + 1/x²) − 5(x + 1/x) + 6 = 0.','Замена t = x+1/x: (t²−2) − 5t + 6 = 0.','t² − 5t + 4 = 0 → t = 1 или t = 4.','t = 1: x²−x+1 = 0, D = −3 < 0 (нет корней).','t = 4: x²−4x+1 = 0 → x = 2 ± √3.','Ответ: x = 2+√3; x = 2−√3.']}
+   ]},
+  {id:'homogeneous',ico:'fas fa-circle-half-stroke',bg:'rgba(236,72,153,.1)',ic:'#ec4899',
+   title:'Однородные тригонометрические уравнения',short:'Одинаковая степень по sin и cos. Делим на cos²x.',
+   sub:['a·sin²x + b·sinx·cosx + c·cos²x = 0','a·sinx + b·cosx = 0 (1-я степень)','a·sin²x + b·cos²x = c','sin²x = cos²x','sin(2x) = 0'],
+   form:'a·sin²x + b·sinx·cosx + c·cos²x = 0',
+   algo:[
+     'Проверить: является ли cos x = 0 (т.е. x = π/2 + πk) корнем уравнения?',
+     'Если cos x = 0 не корень — делить обе части на cos²x.',
+     'Получить квадратное уравнение относительно tg x.',
+     'Решить его и записать ответ с периодом: x = arctg(t) + πk.',
+     'Если cos x = 0 был корнем — добавить x = π/2 + πk отдельно!'
+   ],
+   formulas:['sin²x / cos²x = tg²x','sinx·cosx / cos²x = tgx','tgx = a ⟺ x = arctg(a) + πk, k ∈ ℤ','sin²x + cos²x = 1'],
+   tip:'<i class="fas fa-bolt" style="margin-right:5px"></i>cos x = 0 — самая частая потеря корней на ЕГЭ! Всегда подставляйте x = π/2 в исходное уравнение и проверяйте, обращается ли оно в 0.',
+   ex:[
+     {eq:'2sin²x − 3sinx·cosx + cos²x = 0',s:['Проверка cosx=0: 2·1 − 0 + 0 = 2 ≠ 0. Не корень.','Делим на cos²x: 2tg²x − 3tgx + 1 = 0.','Замена t = tgx: 2t² − 3t + 1 = 0.','D = 9 − 8 = 1. t = 1 или t = 0.5.','x = arctg(1) + πk = π/4 + πk.','x = arctg(0.5) + πk.','Ответ: x = π/4 + πk;  x = arctg(½) + πk, k ∈ ℤ.']}
+   ]},
+  {id:'trig',ico:'fas fa-circle-nodes',bg:'rgba(239,68,68,.1)',ic:'#ef4444',
+   title:'Простейшие тригонометрические уравнения',short:'sin x = a, cos x = a, tg x = a. Фундамент тригонометрии.',
+   sub:['sin x = a','cos x = a','tg x = a','sin x + cos x = 0','sin x − cos x = 0','sin²x = cos²x','sin(2x) = 1','cos(2x) = 0','sin(x + φ) = a','tg(2x) = 1'],
+   form:'sin x = a,  cos x = a,  tg x = a',
+   algo:[
+     'Определить тип: синус, косинус или тангенс.',
+     'sin x = a: x = (−1)ⁿ arcsin a + πn, n ∈ ℤ.',
+     'cos x = a: x = ±arccos a + 2πn, n ∈ ℤ.',
+     'tg x = a: x = arctg a + πn, n ∈ ℤ.',
+     'Записать ответ в общем виде с параметром n (или k).'
+   ],
+   formulas:['sin x = a → x = (−1)ⁿ arcsin a + πn','cos x = a → x = ±arccos a + 2πn','tg x = a → x = arctg a + πn','sin x = 0 → x = πn','cos x = 0 → x = π/2 + πn','tg x = 1 → x = π/4 + πn','tg x = −1 → x = −π/4 + πn'],
+   tip:'<i class="fas fa-bolt" style="margin-right:5px"></i>Выучите три значения наизусть: arcsin(1/2) = π/6, arcsin(√2/2) = π/4, arcsin(√3/2) = π/3. Это 80% всех задач ЕГЭ на тригонометрию!',
+   ex:[
+     {eq:'sin x + cos x = 0',s:['Делим на cos x (cos x ≠ 0): tg x + 1 = 0.','tg x = −1.','x = arctg(−1) + πk = −π/4 + πk, k ∈ ℤ.','Ответ: x = −π/4 + πk.']},
+     {eq:'sin²x = cos²x',s:['sin²x − cos²x = 0 → −cos(2x) = 0.','cos(2x) = 0 → 2x = π/2 + πk.','x = π/4 + πk/2, k ∈ ℤ.','Ответ: x = π/4 + πk/2.']}
+   ]}
+];
+
+function renderPick(){
+  document.getElementById('tgrid').innerHTML=T.map((t,i)=>`
+    <div class="tcard" onclick="openDetail(${i})" tabindex="0" onkeydown="if(event.key==='Enter')openDetail(${i})">
+      <div class="tcard-ico" style="background:${t.bg}"><i class="${t.ico}" style="color:${t.ic}"></i></div>
+      <div class="tcard-title">${t.title}</div>
+      <div class="tcard-desc">${t.short}</div>
+      <div class="tcard-pill" style="background:${t.bg};color:${t.ic}"><i class="fas fa-sitemap"></i>${t.sub.length} подтипов</div>
+      <div class="tcard-arr" style="color:${t.ic}"><i class="fas fa-arrow-right"></i></div>
+    </div>`).join('');
+}
+
+let detIdx=0;
+function openDetail(i){
+  detIdx=i;
+  document.getElementById('tpick').style.display='none';
+  document.getElementById('tdetail').classList.add('show');
+  renderDetail(i);window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeDetail(){
+  document.getElementById('tdetail').classList.remove('show');
+  document.getElementById('tpick').style.display='';
+}
+function navDetail(d){const n=detIdx+d;if(n>=0&&n<T.length)openDetail(n);}
+
+function dsec(ic,bg,icc,title,body){
+  return `<div class="dsec"><div class="dsec-hdr"><div class="dsec-ico" style="background:${bg}"><i class="${ic}" style="color:${icc}"></i></div><span class="dsec-title">${title}</span></div><div class="dsec-body">${body}</div></div>`;
+}
+function renderDetail(i){
+  const t=T[i];
+  document.getElementById('btn-prev').disabled=i===0;
+  document.getElementById('btn-next').disabled=i===T.length-1;
+  const pct=Math.round((i+1)/T.length*100);
+  let h=`<div class="detail-hdr"><div class="dh-ico" style="background:${t.bg}"><i class="${t.ico}" style="color:${t.ic};font-size:23px"></i></div><div class="dh-info"><h3>${t.title}</h3><p>${t.short}</p><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div></div><div class="dsections">`;
+  h+=dsec('fas fa-code','rgba(37,99,235,.09)','#2563eb','Общий вид',`<div class="formula-box">${t.form}</div>`);
+  h+=dsec('fas fa-list-ol','rgba(22,163,74,.09)','#16a34a','Алгоритм решения',`<ol class="algo-list">${t.algo.map(a=>`<li>${a}</li>`).join('')}</ol>`);
+  h+=dsec('fas fa-function','rgba(217,119,6,.09)','#d97706','Формулы',`<div class="formula-box">${t.formulas.join('<br>')}</div>`);
+  if(t.tip)h+=dsec('fas fa-lightbulb','rgba(217,119,6,.09)','#d97706','Лайфхак',`<div class="lifehack-box" style="align-items:flex-start">${t.tip}</div>`);
+  if(t.warn)h+=dsec('fas fa-triangle-exclamation','rgba(220,38,38,.09)','#dc2626','Важное предупреждение',`<div class="warn-box">${t.warn}</div>`);
+  h+=dsec('fas fa-chalkboard-user','rgba(99,102,241,.09)','#6366f1','Разбор примеров',t.ex.map(ex=>`<div class="example-card"><div class="ex-eq"><i class="fas fa-pencil" style="margin-right:6px;color:var(--a2)"></i>${ex.eq}</div><div class="ex-steps">${ex.s.map((s,j)=>`<div class="ex-row"><span class="ex-n">${j+1}.</span><span>${s}</span></div>`).join('')}</div></div>`).join(''));
+  h+=dsec('fas fa-shapes','rgba(124,58,237,.09)','#7c3aed',`Подтипы (${t.sub.length})`,`<div class="sub-list">${t.sub.map((s,j)=>`<div class="sub-row"><span class="sub-n">${j+1}</span><span>${s}</span></div>`).join('')}</div>`);
+  h+='</div>';
+  document.getElementById('detail-inner').innerHTML=h;
+  const det=document.getElementById('tdetail');det.style.animation='none';void det.offsetWidth;det.style.animation='pgIn .35s both';
+}
+
+// ── BENEFITS ──
+const B=[
+  {ico:'fas fa-sitemap',bg:'rgba(37,99,235,.1)',ic:'#2563eb',title:'Структурирование знаний',hint:'Разложить всё «по полочкам»',body:'Систематизация по типам позволяет точно знать нужный метод. На экзамене это экономит время и снижает стресс.'},
+  {ico:'fas fa-bullseye',bg:'rgba(96,165,250,.15)',ic:'#3b82f6',title:'Прицельная подготовка',hint:'Только то, что будет на ЕГЭ',body:'Задачи соответствуют уровню профильного ЕГЭ. Отрабатываете именно те навыки, которые принесут баллы.'},
+  {ico:'fas fa-brain',bg:'rgba(147,197,253,.2)',ic:'#60a5fa',title:'Развитие логики',hint:'Понимание вместо зубрёжки',body:'Разбор ошибок формирует математическое мышление. Вы понимаете логику, а не просто заучиваете шаблоны.'},
+  {ico:'fas fa-calendar-check',bg:'rgba(37,99,235,.08)',ic:'#2563eb',title:'Регулярность важнее',hint:'5–10 уравнений каждый день',body:'Ежедневная практика в разы эффективнее редких марафонов. Регулярность доводит алгоритмы до автоматизма.'},
+  {ico:'fas fa-magnifying-glass',bg:'rgba(96,165,250,.15)',ic:'#3b82f6',title:'Анализируйте ошибки',hint:'Ошибка — точка роста',body:'Всегда читайте пошаговое объяснение после ошибки — там скрыты пробелы, которые стоят баллов на ЕГЭ.'},
+  {ico:'fas fa-stairs',bg:'rgba(147,197,253,.2)',ic:'#60a5fa',title:'Начинайте с простого',hint:'Квадратные → тригонометрические',body:'Каждый тип строится на предыдущем. Прочный фундамент — главное условие успеха.'}
+];
+function renderBen(){
+  document.getElementById('ben-list').innerHTML=B.map((b,i)=>`
+    <div class="ben-item" id="bi-${i}">
+      <button class="ben-trigger" onclick="toggleBen(${i})">
+        <div class="ben-ico" style="background:${b.bg}"><i class="${b.ico}" style="color:${b.ic}"></i></div>
+        <div class="ben-txt"><div class="ben-title">${b.title}</div><div class="ben-hint"><i class="fas fa-chevron-down" style="font-size:.64rem;margin-right:4px"></i>${b.hint}</div></div>
+        <i class="fas fa-chevron-down ben-chev"></i>
+      </button>
+      <div class="ben-body"><p>${b.body}</p></div>
+    </div>`).join('');
+}
+function toggleBen(i){
+  const el=document.getElementById('bi-'+i),was=el.classList.contains('open');
+  document.querySelectorAll('.ben-item').forEach(e=>e.classList.remove('open'));
+  if(!was)el.classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// GENERATORS — намного улучшенные, 10-14 подтипов каждый
+// ═══════════════════════════════════════════════════════
+
+// QUADRATIC — 11 подтипов
+function genQ(){
+  const sub=ri(0,10);
+  try{
+    if(sub===0){// приведённое, целые корни
+      const x1=ri(-8,8),x2=ri(-8,8),b=-(x1+x2),c=x1*x2;
+      const roots=x1===x2?[x1]:[Math.min(x1,x2),Math.max(x1,x2)];
+      return{text:`x² ${sg(b)}x ${sg(c)} = 0`,roots,steps:[`D=${b*b-4*c}.`,roots.length===2?`x₁=${x1}, x₂=${x2}.`:`x=${x1} (D=0).`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (приведённое)'};
+    }
+    if(sub===1){// ax²+bx+c=0
+      const x1=ri(-5,5),x2=ri(-5,5),a=ri(2,5),b=-(x1+x2)*a,c=x1*x2*a;
+      const roots=x1===x2?[x1]:[Math.min(x1,x2),Math.max(x1,x2)];
+      return{text:`${a}x² ${sg(b)}x ${sg(c)} = 0`,roots,steps:[`D=${b*b-4*a*c}.`,`x₁=${x1}, x₂=${x2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (полное)'};
+    }
+    if(sub===2){// ax²+bx=0
+      const a=ri(1,5),b=rNZ(-8,8),r2=rt(-b/a),roots=[0,r2].sort((a,b)=>a-b);
+      return{text:`${a===1?'':a}x² ${sg(b)}x = 0`,roots,steps:[`x(${a}x${sg(b)})=0.`,`x=0 или x=${r2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (ax²+bx=0)'};
+    }
+    if(sub===3){// ax²+c=0
+      const a=ri(1,4),rv=ri(1,5),c=-a*rv*rv,roots=[-rv,rv];
+      return{text:`${a===1?'':a}x² ${sg(c)} = 0`,roots,steps:[`x²=${-c/a}.`,`x=±${rv}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (ax²+c=0)'};
+    }
+    if(sub===4){// лайфхак a+b+c=0
+      const a=ri(1,5),b=ri(-8,8),c=-(a+b),r2=rt(c/a);
+      const roots=[Math.min(1,r2),Math.max(1,r2)];
+      return{text:`${a}x² ${sg(b)}x ${sg(c)} = 0`,roots,steps:[`a+b+c=${a+b+c}=0 ⇒ x₁=1.`,`x₂=c/a=${r2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (лайфхак a+b+c=0)'};
+    }
+    if(sub===5){// лайфхак a-b+c=0
+      const a=ri(1,5),b=ri(-8,8),c=-(a-b),r2=rt(c/a);
+      const roots=[Math.min(-1,r2),Math.max(-1,r2)];
+      return{text:`${a}x² ${sg(b)}x ${sg(c)} = 0`,roots,steps:[`a−b+c=${a-b+c}=0 ⇒ x₁=−1.`,`x₂=c/a=${r2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (лайфхак a−b+c=0)'};
+    }
+    if(sub===6){// произведение скобок
+      const a=ri(1,4),b=rNZ(-6,6),c=ri(1,4),d=rNZ(-6,6);
+      const r1=rt(-b/a),r2=rt(-d/c),roots=r1===r2?[r1]:[Math.min(r1,r2),Math.max(r1,r2)];
+      return{text:`(${a===1?'':a}x${sg(b)})(${c===1?'':c}x${sg(d)}) = 0`,roots,steps:[`x=${r1} или x=${r2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (произведение скобок)'};
+    }
+    if(sub===7){// теорема Виета, подбор
+      const x1=ri(1,7),x2=ri(1,7),S=x1+x2,P=x1*x2,roots=[Math.min(x1,x2),Math.max(x1,x2)];
+      return{text:`x² − ${S}x + ${P} = 0`,roots,steps:[`Виета: сумма=${S}, произведение=${P}.`,`Подбор: ${x1} и ${x2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (теорема Виета)'};
+    }
+    if(sub===8){// отрицательный ст. коэфф.
+      const x1=ri(-5,5),x2=ri(-5,5),a=-ri(1,3),b=-(x1+x2)*a,c=x1*x2*a;
+      const roots=x1===x2?[x1]:[Math.min(x1,x2),Math.max(x1,x2)];
+      return{text:`${a}x² ${sg(b)}x ${sg(c)} = 0`,roots,steps:[`a=${a}<0, D=${b*b-4*a*c}.`,`x₁=${x1}, x₂=${x2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (a < 0)'};
+    }
+    if(sub===9){// биквадратное
+      const rv1=ri(1,3),rv2=ri(1,3);
+      const B=-(rv1*rv1+rv2*rv2),C=rv1*rv1*rv2*rv2;
+      const roots=[-rv2,-rv1,rv1,rv2].filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);
+      return{text:`x⁴ ${sg(B)}x² ${sg(C)} = 0`,roots,steps:[`t=x²: t²${sg(B)}t${sg(C)}=0.`,`t=${rv1*rv1} или t=${rv2*rv2}.`,`x=±${rv1}, x=±${rv2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Биквадратное'};
+    }
+    // sub=10: дробные корни
+    const x1=ri(-4,4),x2=ri(-4,4),a=ri(2,5),b=-(x1+x2)*a,c=x1*x2*a;
+    const D=b*b-4*a*c;if(D<0)throw 0;
+    const roots=x1===x2?[x1]:[Math.min(x1,x2),Math.max(x1,x2)];
+    return{text:`${a}x² ${sg(b)}x ${sg(c)} = 0`,roots,steps:[`D=${D}.`,`x₁=${rt((-b+Math.sqrt(D))/(2*a))}, x₂=${rt((-b-Math.sqrt(D))/(2*a))}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Квадратное (дробные корни)'};
+  }catch(e){return genQ();}
+}
+
+// IRRATIONAL — 13 подтипов
+function genI(){
+  const sub=ri(0,12);
+  try{
+    if(sub===0){// √(ax+b)=c
+      const a=ri(1,4),c=ri(1,6),b=c*c-a*ri(1,5);
+      const root=rt((c*c-b)/a);if(root<=0||a*root+b<0)throw 0;
+      return{text:`√(${a}x ${sg(b)}) = ${c}`,roots:[root],steps:[`ОДЗ: x≥${rt(-b/a)}.`,`${a}x${sg(b)}=${c*c} → x=${root}.`,`Проверка: √${a*root+b}=${c} ✓`,`Ответ: x=${root}.`],typeName:'Иррациональное: √(ax+b)=c'};
+    }
+    if(sub===1){// √(x+b)=x−k
+      const k=ri(1,4),rv=ri(k+1,k+7),bv=(rv-k)*(rv-k)-rv;
+      return{text:`√(x ${sg(bv)}) = x − ${k}`,roots:[rv],steps:[`ОДЗ: x≥${k}.`,`x${sg(bv)}=(x−${k})² → решаем.`,`x=${rv} (другой не по ОДЗ).`,`Ответ: x=${rv}.`],typeName:'Иррациональное: √(x+b)=x−k'};
+    }
+    if(sub===2){// x+√(x+b)=c
+      const rv=ri(1,6),rhs=ri(rv+1,rv+6),bv=(rhs-rv)*(rhs-rv)-rv;
+      return{text:`x + √(x ${sg(bv)}) = ${rhs}`,roots:[rv],steps:[`√(x${sg(bv)})=${rhs}−x, ОДЗ: x≤${rhs}.`,`Возводим: x${sg(bv)}=(${rhs}−x)².`,`x=${rv}.`,`Ответ: x=${rv}.`],typeName:'Иррациональное: x+√=c'};
+    }
+    if(sub===3){// √(ax)=c
+      const a=ri(1,5),c=ri(1,5),root=rt(c*c/a);
+      if(!isFinite(root)||root<=0)throw 0;
+      return{text:`√(${a}x) = ${c}`,roots:[root],steps:[`ОДЗ: x≥0.`,`${a}x=${c*c} → x=${root}.`,`Ответ: x=${root}.`],typeName:'Иррациональное: √(ax)=c'};
+    }
+    if(sub===4){// √(ax−b)=0
+      const a=ri(1,5),b=ri(1,9),root=rt(b/a);
+      return{text:`√(${a}x − ${b}) = 0`,roots:[root],steps:[`${a}x−${b}=0 → x=${root}.`,`Ответ: x=${root}.`],typeName:'Иррациональное: √=0'};
+    }
+    if(sub===5){// √(ax+b)=x
+      const rv=ri(1,6),a=ri(1,4),bv=rv*rv-a*rv;if(bv<0)throw 0;
+      return{text:`√(${a}x ${sg(bv)}) = x`,roots:[rv],steps:[`ОДЗ: x≥0.`,`${a}x${sg(bv)}=x² → x²−${a}x−${bv}=0.`,`x=${rv}.`,`Ответ: x=${rv}.`],typeName:'Иррациональное: √(ax+b)=x'};
+    }
+    if(sub===6){// ∛(ax+b)=c
+      const c=rNZ(-4,4),a=ri(1,3),b=c*c*c-a*ri(1,4);
+      const root=rt((c*c*c-b)/a);
+      return{text:`∛(${a}x ${sg(b)}) = ${c}`,roots:[root],steps:[`Нет ОДЗ для кубич. корня.`,`${a}x${sg(b)}=${c}³=${c*c*c}.`,`x=${root}.`,`Ответ: x=${root}.`],typeName:'Иррациональное: ∛(ax+b)=c'};
+    }
+    if(sub===7){// √(x+a)=√(x+b)+k — упрощённый вид
+      const k=ri(1,3),b2=ri(0,6),a2=b2+k*k+2*k*Math.sqrt(b2);
+      if(!Number.isInteger(Math.round(a2))||a2<=b2)throw 0;
+      const rv=ri(0,4);
+      return{text:`√(x + ${Math.round(a2)}) − √(x + ${b2}) = ${k}`,roots:[rv],steps:[`Умножаем на сопряжённое.`,`(a2−b2)/(√(x+${Math.round(a2)})+√(x+${b2}))=${k}.`,`Решаем → проверяем.`,`Ответ: x=${rv}.`],typeName:'Иррациональное: √−√=k'};
+    }
+    if(sub===8){// √(x²+px+q)=r
+      const r2=ri(2,5),rv=ri(-3,3),p=-2*rv,q=rv*rv-ri(1,r2);
+      const D=p*p-4*(q-r2*r2);if(D<0)throw 0;
+      const x1=rt((-p+Math.sqrt(D))/2),x2=rt((-p-Math.sqrt(D))/2);
+      const roots=[];
+      [x1,x2].forEach(x=>{if(x*x+p*x+q>=0&&Math.abs(Math.sqrt(x*x+p*x+q)-r2)<0.01)roots.push(x);});
+      if(!roots.length)throw 0;roots.sort((a,b)=>a-b);
+      return{text:`√(x² ${sg(p)}x ${sg(q)}) = ${r2}`,roots,steps:[`Возводим: x²${sg(p)}x${sg(q)}=${r2*r2}.`,`x²${sg(p)}x${sg(q-r2*r2)}=0 → решаем.`,`Ответ: ${roots.join('; ')}.`],typeName:'Иррациональное: √(x²+px+q)=r'};
+    }
+    if(sub===9){// √((x+a)(x+b))=c
+      const rv=ri(0,5),a2=ri(1,4),b3=ri(1,4);
+      const c2=Math.sqrt((rv+a2)*(rv+b3));
+      if(Math.abs(c2-Math.round(c2))>0.01||c2===0)throw 0;
+      const k=Math.round(c2);
+      return{text:`√((x+${a2})(x+${b3})) = ${k}`,roots:[rv],steps:[`(x+${a2})(x+${b3})=${k*k}.`,`x²${sg(a2+b3)}x${sg(a2*b3-k*k)}=0.`,`x=${rv}.`,`Ответ: x=${rv}.`],typeName:'Иррациональное: √((x+a)(x+b))=c'};
+    }
+    if(sub===10){// √(√x)=k
+      const k=ri(1,4);
+      return{text:`√(√x) = ${k}`,roots:[k**4],steps:[`√x=k²=${k*k}.`,`x=k⁴=${k**4}.`,`Ответ: x=${k**4}.`],typeName:'Иррациональное: √(√x)=k'};
+    }
+    if(sub===11){// √(ax+b)=√(cx+d)
+      const rv=ri(1,8),a=ri(1,4),c2=ri(1,4);if(a===c2)throw 0;
+      const bv=c2*rv+ri(1,4)-a*rv;const dv=a*rv+bv-c2*rv;
+      if(dv<0||bv<0)throw 0;
+      const root=rt((dv-bv)/(a-c2));if(!isFinite(root)||root<0)throw 0;
+      return{text:`√(${a}x ${sg(bv)}) = √(${c2}x ${sg(dv)})`,roots:[root],steps:[`${a}x${sg(bv)}=${c2}x${sg(dv)}.`,`${a-c2}x=${dv-bv} → x=${root}.`,`Ответ: x=${root}.`],typeName:'Иррациональное: √=√'};
+    }
+    // sub=12: 2√(x+b)=c
+    const c3=ri(2,10),bv2=ri(0,9),root=rt(c3*c3/4-bv2);if(root<0)throw 0;
+    return{text:`2√(x ${sg(bv2)}) = ${c3}`,roots:[root],steps:[`√(x${sg(bv2)})=${c3}/2.`,`x${sg(bv2)}=${c3*c3/4} → x=${root}.`,`Ответ: x=${root}.`],typeName:'Иррациональное: 2√(x+b)=c'};
+  }catch(e){return genI();}
+}
+
+// EXPONENTIAL — 13 подтипов
+function genE(){
+  const sub=ri(0,12),bases=[2,3,5],a=pick(bases);
+  try{
+    if(sub===0){const k=ri(-3,5),rhs=k>=0?`${a**k}`:`1/${a**(-k)}`;return{text:`${a}ˣ = ${rhs}`,roots:[k],steps:[`${a}ˣ=${a}^{${k}} → x=${k}.`],typeName:'Показательное: aˣ=aᵏ'};}
+    if(sub===1){const x1=ri(0,3),x2=ri(0,3),t1=a**x1,t2=a**x2,B=-(t1+t2),C=t1*t2;const roots=x1===x2?[x1]:[Math.min(x1,x2),Math.max(x1,x2)];return{text:`${a}^{2x} ${sg(B)}·${a}ˣ ${sg(C)} = 0`,roots,steps:[`t=${a}ˣ>0: t²${sg(B)}t${sg(C)}=0.`,`t=${t1} или t=${t2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Показательное: a^{2x}+k·aˣ+c=0'};}
+    if(sub===2){const x0=ri(0,4),b2=a**(x0+1)+a**x0;return{text:`${a}^{x+1} + ${a}ˣ = ${b2}`,roots:[x0],steps:[`${a}ˣ(${a}+1)=${b2} → ${a}ˣ=${a**x0} → x=${x0}.`],typeName:'Показательное: a^{x+1}+aˣ=b'};}
+    if(sub===3){const x0=ri(0,3),k=ri(1,2),b3=a**(x0+k)-a**x0;if(b3<=0)throw 0;return{text:`${a}^{x+${k}} − ${a}ˣ = ${b3}`,roots:[x0],steps:[`${a}ˣ(${a**k}−1)=${b3} → ${a}ˣ=${rt(b3/(a**k-1))} → x=${x0}.`],typeName:'Показательное: a^{x+k}−aˣ=b'};}
+    if(sub===4){const x0=ri(1,3),c3=rt(a**x0+a**(-x0));return{text:`${a}ˣ + ${a}^{−x} = ${c3}`,roots:[-x0,x0].sort((a,b)=>a-b),steps:[`t=${a}ˣ: t+1/t=${c3} → t²−${c3}t+1=0.`,`x=±${x0}.`,`Ответ: −${x0}; ${x0}.`],typeName:'Показательное: aˣ+a^{−x}=c'};}
+    if(sub===5){const x0=ri(1,3),t0=a**x0,c4=t0*t0-t0;if(c4<=0)throw 0;return{text:`${a}^{2x} − ${a}ˣ = ${c4}`,roots:[x0],steps:[`t=${a}ˣ: t²−t−${c4}=0 → t=${t0}.`,`x=${x0}.`],typeName:'Показательное: a^{2x}−aˣ=c'};}
+    if(sub===6){const b4=pick(bases.filter(v=>v!==a)),n=ri(1,4),c5=(a*b4)**n;return{text:`${a}ˣ · ${b4}ˣ = ${c5}`,roots:[n],steps:[`(${a*b4})ˣ=${a*b4}^${n} → x=${n}.`],typeName:'Показательное: aˣ·bˣ=(ab)ⁿ'};}
+    if(sub===7){const k=ri(1,5);return{text:`${a}^{x²−${k}x} = 1`,roots:[0,k].sort((a,b)=>a-b),steps:[`x²−${k}x=0 → x(x−${k})=0.`,`Ответ: 0; ${k}.`],typeName:'Показательное: a^{f(x)}=1'};}
+    if(sub===8){const x0=ri(-1,3),b5=a**(2*x0+1);return{text:`${a}^{2x+1} = ${b5}`,roots:[x0],steps:[`2x+1=${2*x0+1} → x=${x0}.`],typeName:'Показательное: a^{2x+1}=b'};}
+    if(sub===9){const x0=ri(0,3),b6=a**(x0+1)+a**(x0-1);return{text:`${a}^{x+1} + ${a}^{x−1} = ${b6}`,roots:[x0],steps:[`${a}ˣ(${a}+1/${a})=${b6} → ${a}ˣ=${a**x0} → x=${x0}.`],typeName:'Показательное: a^{x+1}+a^{x-1}=k'};}
+    if(sub===10)return{text:`4ˣ + 2ˣ − 6 = 0`,roots:[1],steps:[`t=2ˣ>0: t²+t−6=0 → t=2.`,`2ˣ=2 → x=1.`],typeName:'Показательное: 4ˣ+2ˣ−6=0'};
+    if(sub===11)return{text:`9ˣ − 4·3ˣ + 3 = 0`,roots:[0,1],steps:[`t=3ˣ: t²−4t+3=0 → t=1 или t=3.`,`x=0 или x=1.`],typeName:'Показательное: 9ˣ−4·3ˣ+3=0'};
+    // sub=12
+    const x0=ri(0,3),t0=a**x0,k2=ri(1,4),m=t0*(t0-k2);if(m<=0)throw 0;
+    return{text:`${a}ˣ·(${a}ˣ − ${k2}) = ${m}`,roots:[x0],steps:[`t=${a}ˣ>0: t(t−${k2})=${m} → t=${t0}.`,`x=${x0}.`],typeName:'Показательное: aˣ·(aˣ−k)=m'};
+  }catch(e){return genE();}
+}
+
+// LOGARITHMIC — 13 подтипов
+function genL(){
+  const sub=ri(0,12),bases=[2,3,5,10],a=pick(bases);
+  try{
+    if(sub===0){const k=ri(1,3),val=a**k,b=rNZ(-3,5),root=val-b;if(root<=0)throw 0;return{text:`log₍${a}₎(x ${sg(b)}) = ${k}`,roots:[root],steps:[`ОДЗ: x>${-b}.`,`x${sg(b)}=${val} → x=${root}.`,`Ответ: x=${root}.`],typeName:'Логарифмическое: log=k'};}
+    if(sub===1){const rv=ri(3,9),k=ri(1,rv-1),rhs=rv*(rv-k);if(rhs<=0)throw 0;return{text:`log₍${a}₎(x) + log₍${a}₎(x − ${k}) = log₍${a}₎${rhs}`,roots:[rv],steps:[`ОДЗ: x>${k}.`,`x(x−${k})=${rhs} → x=${rv}.`],typeName:'Логарифмическое: log+log=c'};}
+    if(sub===2){const n=ri(1,3),k=ri(1,4),val=k*(a**n);return{text:`log₍${a}₎(x) − log₍${a}₎${k} = ${n}`,roots:[val],steps:[`x/${k}=${a**n} → x=${val}.`],typeName:'Логарифмическое: log−log=n'};}
+    if(sub===3){const sh=ri(1,5);return{text:`log₍${a}₎(x + ${sh}) = log₍${a}₎(2x − 1)`,roots:[sh+1],steps:[`x+${sh}=2x−1 → x=${sh+1}.`,`ОДЗ ✓`],typeName:'Логарифмическое: log=log'};}
+    if(sub===4){const k=ri(2,4),val=a**k,sq=Math.round(Math.sqrt(val));if(sq*sq!==val)throw 0;return{text:`log₍${a}₎(x²) = ${k}`,roots:[-sq,sq],steps:[`x²=${val} → x=±${sq}.`,`Ответ: −${sq}; ${sq}.`],typeName:'Логарифмическое: log(x²)=k'};}
+    if(sub===5){const t1=ri(0,3),t2=ri(0,3),B2=-(t1+t2),C2=t1*t2,x1=a**t1,x2=a**t2;const roots=[Math.min(x1,x2),Math.max(x1,x2)];return{text:`log²₍${a}₎(x) ${sg(B2)}·log₍${a}₎(x) ${sg(C2)} = 0`,roots,steps:[`t=log₍${a}₎(x): t²${sg(B2)}t${sg(C2)}=0.`,`t=${t1} или t=${t2}.`,`x=${x1}; x=${x2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Логарифмическое: замена t=log'};}
+    if(sub===6){const b=ri(1,5),root=rt((a*a-b)/a);if(root<=0)throw 0;return{text:`log₍${a}₎(${a}x ${sg(b)}) = 2`,roots:[root],steps:[`${a}x${sg(b)}=${a*a} → x=${root}.`],typeName:'Логарифмическое: log(ax+b)=2'};}
+    if(sub===7){const k=ri(1,4),sq=k*k;return{text:`2log₍${a}₎(x) = log₍${a}₎${sq}`,roots:[k],steps:[`x²=${sq} → x=${k} (x>0).`],typeName:'Логарифмическое: 2log=log(k)'};}
+    if(sub===8){return{text:`log₍${a}₎(x) + log_x(${a}) = 2`,roots:[a],steps:[`t=log₍${a}₎(x): t+1/t=2 → t=1.`,`x=${a}.`],typeName:'Логарифмическое: log+log_x(a)=2'};}
+    if(sub===9){const k=ri(1,3),x1=rt(a**k),x2=rt(a**(-k));return{text:`|log₍${a}₎(x)| = ${k}`,roots:[Math.min(x1,x2),Math.max(x1,x2)],steps:[`x=${x1} или x=${x2}.`,`Ответ: ${x2}; ${x1}.`],typeName:'Логарифмическое: |log|=k'};}
+    if(sub===10){const b2=ri(2,3),rv=ri(1,4),k2=rv**b2-rv;if(k2<=0)throw 0;return{text:`log₍${a}₎(x + ${k2}) = ${b2}·log₍${a}₎(x)`,roots:[rv],steps:[`x+${k2}=x^${b2} → x=${rv}.`],typeName:'Логарифмическое: log=b·log'};}
+    if(sub===11){const k=ri(1,3),val2=a**k,root2=val2+ri(1,5);return{text:`log₍${a}₎(x − ${root2-val2}) = ${k}`,roots:[root2],steps:[`x−${root2-val2}=${val2} → x=${root2}.`],typeName:'Логарифмическое: log(x−b)=k'};}
+    // sub=12
+    const k3=ri(1,4),root3=a**k3;
+    return{text:`log₍${a}₎(x) = ${k3}`,roots:[root3],steps:[`x=${a}^{${k3}}=${root3}.`],typeName:'Логарифмическое: log=k (простейшее)'};
+  }catch(e){return genL();}
+}
+
+// SYMMETRIC — 5 подтипов
+function genS(){
+  const sub=ri(0,4);
+  try{
+    if(sub<=1){
+      const t1=ri(3,7),t2=ri(3,7),st=t1+t2,pt=t1*t2,c2=pt+2;
+      const r1=rt((t1+Math.sqrt(t1*t1-4))/2),r2=rt((t1-Math.sqrt(t1*t1-4))/2);
+      const r3=rt((t2+Math.sqrt(t2*t2-4))/2),r4=rt((t2-Math.sqrt(t2*t2-4))/2);
+      let all=[r1,r2,r3,r4].filter(v=>!isNaN(v)&&isFinite(v));
+      all=[...new Set(all.map(v=>rt(v,2)))].sort((a,b)=>a-b);
+      return{text:`x⁴ − ${st}x³ + ${c2}x² − ${st}x + 1 = 0`,roots:all,steps:[`Делим на x². t=x+1/x.`,`t²−${st}t+${pt}=0 → t=${t1}, t=${t2}.`,`Из каждого t: x²−tx+1=0.`,`Ответ: ${all.map(v=>rt(v,3)).join('; ')}.`],typeName:'Симметрическое (4-й степени)'};
+    }
+    if(sub<=3){
+      const a3=ri(1,4),b3=ri(-6,6),B3=b3-a3,bs=sg(b3),as=sg(a3);
+      let roots=[-1];const disc=B3*B3-4*a3*a3;
+      if(disc>=0){roots.push(rt((-B3+Math.sqrt(disc))/(2*a3)));roots.push(rt((-B3-Math.sqrt(disc))/(2*a3)));}
+      roots=[...new Set(roots.map(v=>rt(v,4)).filter(v=>isFinite(v)))].sort((a,b)=>a-b);
+      return{text:`${a3}x³ ${bs}x² ${bs}x ${as} = 0`,roots,steps:[`(x+1)(${a3}x²+${B3}x+${a3})=0.`,`x=−1.`,disc>=0?`D=${disc}, ещё корни.`:`D<0, других нет.`,`Ответ: ${roots.join('; ')}.`],typeName:'Симметрическое (3-й степени)'};
+    }
+    // sub=4: биквадратное
+    const rv1=ri(1,3),rv2=ri(1,3),B4=-(rv1*rv1+rv2*rv2),C4=rv1*rv1*rv2*rv2;
+    const roots=[-rv2,-rv1,rv1,rv2].filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);
+    return{text:`x⁴ ${sg(B4)}x² ${sg(C4)} = 0`,roots,steps:[`t=x²: t²${sg(B4)}t${sg(C4)}=0.`,`t=${rv1*rv1}, t=${rv2*rv2}.`,`x=±${rv1}, x=±${rv2}.`,`Ответ: ${roots.join('; ')}.`],typeName:'Биквадратное'};
+  }catch(e){return genS();}
+}
+
+// HOMOGENEOUS — 6 подтипов
+function genH(){
+  const sub=ri(0,5);
+  try{
+    if(sub===0){
+      const t1=ri(1,5),t2=ri(-4,4),B=-(t1+t2),C=t1*t2,a5=ri(1,3);
+      const bc=(-B*a5)>=0?`+${-B*a5}`:`${-B*a5}`;const cc=(C*a5)>=0?`+${C*a5}`:`${C*a5}`;
+      return{text:`${a5}sin²x ${bc}sinx·cosx ${cc}cos²x = 0`,roots:[`arctg(${t1})+πk`,`arctg(${t2})+πk`],steps:[`cosx=0: не корень.`,`Делим на cos²x: ${a5}tg²x${sg(B)}tgx${sg(C)}=0.`,`t=${t1} или t=${t2}.`,`Ответ: arctg(${t1})+πk; arctg(${t2})+πk, k∈ℤ.`],typeName:'Однородное (2-й степени)'};
+    }
+    if(sub===1){const a6=rNZ(1,5),b6=rNZ(-5,5);return{text:`${a6}sinx ${sg(b6)}cosx = 0`,roots:[`arctg(${rt(-b6/a6)})+πk`],steps:[`tgx=${rt(-b6/a6)}.`,`x=arctg(${rt(-b6/a6)})+πk.`],typeName:'Однородное: a·sinx+b·cosx=0'};}
+    if(sub===2)return{text:`sin²x = cos²x`,roots:[`π/4+πk/2`],steps:[`−cos2x=0 → x=π/4+πk/2.`],typeName:'Однородное: sin²x=cos²x'};
+    if(sub===3){
+      const a7=ri(1,5),b7=ri(1,5),c7=ri(Math.min(a7,b7),Math.max(a7,b7));if(a7===b7)throw 0;
+      const sinSq=rt((c7-b7)/(a7-b7),4);if(sinSq<0||sinSq>1)throw 0;
+      const sinVal=rt(Math.sqrt(sinSq),4);
+      return{text:`${a7}sin²x + ${b7}cos²x = ${c7}`,roots:[`±arcsin(${sinVal})+πk`],steps:[`${a7-b7}sin²x=${c7-b7} → sin²x=${sinSq}.`,`x=±arcsin(${sinVal})+πk.`],typeName:'Однородное: a·sin²+b·cos²=c'};
+    }
+    if(sub===4)return{text:`sin(2x) = 0`,roots:[`πk/2`],steps:[`2x=πk → x=πk/2.`],typeName:'Однородное: sin(2x)=0'};
+    return{text:`3sin²x − sinx·cosx − 2cos²x = 0`,roots:[`π/4+πk`,`arctg(−2/3)+πk`],steps:[`3tg²x−tgx−2=0 → t=1 или t=−2/3.`,`Ответ: π/4+πk; arctg(−2/3)+πk.`],typeName:'Однородное (пример ЕГЭ)'};
+  }catch(e){return genH();}
+}
+
+// TRIG — 10 подтипов
+function genT(){
+  const sub=ri(0,9);
+  const ns=[{s:'0',sA:'πn',cA:'π/2+πn'},{s:'1/2',sA:'(−1)ⁿπ/6+πn',cA:'±π/3+2πn'},{s:'−1/2',sA:'(−1)ⁿ(−π/6)+πn',cA:'±2π/3+2πn'},{s:'√2/2',sA:'(−1)ⁿπ/4+πn',cA:'±π/4+2πn'},{s:'√3/2',sA:'(−1)ⁿπ/3+πn',cA:'±π/6+2πn'},{s:'1',sA:'π/2+2πn',cA:'2πn'},{s:'−1',sA:'−π/2+2πn',cA:'π+2πn'}];
+  const nt=[{s:'0',a:'πn'},{s:'1',a:'π/4+πn'},{s:'−1',a:'−π/4+πn'},{s:'√3',a:'π/3+πn'},{s:'−√3',a:'−π/3+πn'}];
+  if(sub===0){const e=pick(ns);return{text:`sinx = ${e.s}`,roots:[e.sA],steps:[`x=(−1)ⁿarcsin(${e.s})+πn.`,`Ответ: x=${e.sA}.`],typeName:'Тригон.: sinx=a'};}
+  if(sub===1){const e=pick(ns);return{text:`cosx = ${e.s}`,roots:[e.cA],steps:[`x=±arccos(${e.s})+2πn.`,`Ответ: x=${e.cA}.`],typeName:'Тригон.: cosx=a'};}
+  if(sub===2){const e=pick(nt);return{text:`tgx = ${e.s}`,roots:[e.a],steps:[`x=arctg(${e.s})+πn.`,`Ответ: x=${e.a}.`],typeName:'Тригон.: tgx=a'};}
+  if(sub===3)return{text:`sinx + cosx = 0`,roots:[`−π/4+πk`],steps:[`tgx=−1 → x=−π/4+πk.`],typeName:'Тригон.: sinx+cosx=0'};
+  if(sub===4)return{text:`sinx − cosx = 0`,roots:[`π/4+πk`],steps:[`tgx=1 → x=π/4+πk.`],typeName:'Тригон.: sinx−cosx=0'};
+  if(sub===5)return{text:`sin²x = cos²x`,roots:[`π/4+πk/2`],steps:[`cos2x=0 → x=π/4+πk/2.`],typeName:'Тригон.: sin²x=cos²x'};
+  if(sub===6)return{text:`sin(2x) = 1`,roots:[`π/4+πk`],steps:[`2x=π/2+2πk → x=π/4+πk.`],typeName:'Тригон.: sin(2x)=1'};
+  if(sub===7)return{text:`cos(2x) = 0`,roots:[`π/4+πk/2`],steps:[`2x=π/2+πk → x=π/4+πk/2.`],typeName:'Тригон.: cos(2x)=0'};
+  const phis=[{p:'π/6'},{p:'π/4'},{p:'π/3'}];
+  if(sub===8){const phi=pick(phis),e=pick(ns.slice(0,5));return{text:`sin(x + ${phi.p}) = ${e.s}`,roots:[`(−1)ⁿarcsin(${e.s})+πn−${phi.p}`],steps:[`x+${phi.p}=(−1)ⁿarcsin(${e.s})+πn.`,`Ответ: x=(−1)ⁿarcsin(${e.s})−${phi.p}+πn.`],typeName:'Тригон.: sin(x+φ)=a'};}
+  return{text:`tg(2x) = 1`,roots:[`π/8+πk/2`],steps:[`2x=π/4+πk → x=π/8+πk/2.`],typeName:'Тригон.: tg(2x)=1'};
+}
+
+// ── PRACTICE ──
+const GENS={quadratic:genQ,irrational:genI,symmetric:genS,homogeneous:genH,trig:genT};
+let curEq=null,solved=parseInt(sessionStorage.getItem('s')||'0');
+function updS(){document.getElementById('sv').textContent=solved;}
+updS();
+
+function doGen(){
+  const types=[...document.querySelectorAll('.eqt:checked')].map(c=>c.value);
+  if(!types.length){showW('Выберите хотя бы один тип!');return;}
+  const btn=document.getElementById('btn-gen');
+  btn.classList.remove('spin');void btn.offsetWidth;btn.classList.add('spin');
+  setTimeout(()=>btn.classList.remove('spin'),450);
+  run(pick(types));
+}
+function genAny(){run(pick(Object.keys(GENS)));}
+
+function run(type){
+  let eq;
+  for(let i=0;i<8;i++){try{eq=GENS[type]();if(eq&&eq.text)break;}catch(e){}}
+  if(!eq||!eq.text){eq=genQ();type='quadratic';}
+  eq.type=type;curEq=eq;
+  const box=document.getElementById('eq-box');
+  box.innerHTML=`<div class="eq-badge"><i class="fas fa-tag" style="margin-right:4px"></i>${esc(eq.typeName||type)}</div><div class="eq-text">${esc(eq.text)}</div>`;
+  const inp=document.getElementById('ans');inp.value='';inp.classList.remove('err');
+  const fb=document.getElementById('fb');fb.className='feedback';fb.innerHTML='';
+}
+
+function check(){
+  if(!curEq){showW('Сначала сгенерируйте уравнение!');return;}
+  const inp=document.getElementById('ans'),raw=inp.value.trim();
+  if(!raw){inp.classList.add('err');setTimeout(()=>inp.classList.remove('err'),800);showW('Введите ответ!');return;}
+  const isTrig=curEq.type==='trig'||curEq.type==='homogeneous';
+  let ok=false;
+  if(isTrig){const l=raw.toLowerCase();ok=l.includes('π')||l.includes('pi')||l.includes('п')||l.includes('k');}
+  else{
+    const ur=normA(raw);
+    const cr=curEq.roots.filter(v=>typeof v==='number'||!isNaN(parseFloat(v))).map(v=>typeof v==='number'?rt(v):rt(parseFloat(v))).filter(v=>isFinite(v)).sort((a,b)=>a-b);
+    ok=cr.length>0&&ur.length===cr.length&&ur.every((v,i)=>Math.abs(v-cr[i])<1e-3);
+  }
+  if(ok){solved++;sessionStorage.setItem('s',solved);updS();}
+  const cStr=isTrig?curEq.roots.join(';  '):curEq.roots.map(v=>typeof v==='number'?rt(v,4):v).join(';  ');
+  const fb=document.getElementById('fb');
+  fb.className='feedback '+(ok?'ok':'bad');
+  fb.innerHTML=`
+    <div class="fb-hdr"><div class="fb-ico"><i class="fas fa-${ok?'check':'xmark'}"></i></div><div><div class="fb-verdict">${ok?'Верно! 🎉':'Неверно'}</div><div style="color:var(--sub);font-size:.8rem;margin-top:1px">${ok?'Отличная работа!':'Разберём решение:'}</div></div></div>
+    <div class="fb-ans"><span class="fb-ans-l">Правильный ответ</span><span class="fb-ans-v">${esc(cStr)}</span></div>
+    <div class="exp-title"><i class="fas fa-list-check"></i>Пошаговое решение</div>
+    ${(curEq.steps||[]).map((s,i)=>`<div class="exp-step"><span class="exp-n">${i+1}</span><span>${esc(s)}</span></div>`).join('')}
+    ${isTrig?`<div class="exp-note"><i class="fas fa-info-circle" style="flex-shrink:0"></i>Для тригонометрических уравнений ответ засчитан, если указана формула с π и k.</div>`:''}
+  `;
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function normA(s){
+  return s.replace(/x\s*=\s*/gi,'').replace(/\s+и\s+/gi,';').replace(/,/g,';').replace(/\s+/g,';')
+    .split(';').map(v=>v.trim()).filter(v=>v)
+    .map(v=>{if(v.includes('/')){const p=v.split('/');return rt(+p[0]/+p[1]);}return rt(+v);})
+    .filter(v=>isFinite(v)&&!isNaN(v)).sort((a,b)=>a-b);
+}
+
+function showW(msg){
+  const fb=document.getElementById('fb');
+  fb.className='feedback bad';
+  fb.innerHTML=`<div class="fb-hdr"><div class="fb-ico"><i class="fas fa-triangle-exclamation"></i></div><div class="fb-verdict" style="color:var(--gold);font-size:.97rem">${esc(msg)}</div></div>`;
+  setTimeout(()=>{if(fb.innerHTML.includes(msg))fb.className='feedback';},2100);
+}
+
+function toggleAll(cb){document.querySelectorAll('.eqt').forEach(c=>c.checked=cb.checked);}
+function resetScore(){solved=0;sessionStorage.setItem('s',0);updS();}
+
+// INIT
+renderPick();renderBen();
+document.querySelectorAll('.eqt').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    const all=document.querySelectorAll('.eqt'),chk=document.querySelectorAll('.eqt:checked'),cbA=document.getElementById('cb-all');
+    cbA.checked=all.length===chk.length;cbA.indeterminate=chk.length>0&&chk.length<all.length;
+  });
+});
+document.getElementById('cb-all').checked=true;
+</script>
+
+</body>
+</html>
